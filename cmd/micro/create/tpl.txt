@@ -1,0 +1,61 @@
+package model
+
+import (
+	"time"
+
+	"github.com/xiaoenai/tp-micro/model/mongo"
+)
+
+{{.StructDefinition}}
+
+// TableName implements 'github.com/xiaoenai/tp-micro/model'.Cacheable
+func (*{{.Name}}) TableName() string {
+	return "{{.SnakeName}}"
+}
+
+var {{.LowerFirstName}}DB, _ = mgoDBHandle.RegCacheableDB(new({{.Name}}), time.Hour*24)
+
+// Get{{.Name}}DB returns the {{.Name}} DB handler.
+func Get{{.Name}}DB() *mongo.CacheableDB {
+	return {{.LowerFirstName}}DB
+}
+
+// Get{{.Name}}ByWhere query a {{.Name}} data from database by WHERE condition.
+// NOTE:
+//  Without cache layer;
+//  If @return error!=nil, means the database error.
+func Get{{.Name}}ByWhere(query mongo.M) (*{{.Name}}, bool, error) {
+	var _{{.LowerFirstLetter}} = new({{.Name}})
+	err := {{.LowerFirstName}}DB.WitchCollection(func(col *mongo.Collection) error {
+		return col.Find(query).One(&_{{.LowerFirstLetter}})
+	})
+	switch err {
+	case nil:
+		return _{{.LowerFirstLetter}}, true, nil
+	case mongo.ErrNotFound:
+		return nil, false, nil
+	default:
+		return nil, false, err
+	}
+}
+
+// Upsert{{.Name}} insert or update the {{.Name}} data by primary key.
+// NOTE:
+//  With cache layer;
+//  Insert data if the primary key is specified;
+//  Update data based on _updateFields if no primary key is specified;
+//  _updateFields' members must be snake format;
+//  Automatic update updated_at field;
+//  Don't update the primary key and the created_at key;
+//  Update all fields except the primary key and the created_at key if _updateFields is empty.
+func Upsert{{.Name}}(selector mongo.M, updater mongo.M) error {
+	_{{.LowerFirstLetter}}.UpdatedAt = coarsetime.FloorTimeNow().Unix()
+	if _{{.LowerFirstLetter}}.CreatedAt == 0 {
+		_{{.LowerFirstLetter}}.CreatedAt = _{{.LowerFirstLetter}}.UpdatedAt
+	}
+	return {{.LowerFirstName}}DB.WitchCollection(func(col *mongo.Collection) error {
+		_, err = col.Upsert(selector, updater)
+		return err
+	})
+}
+

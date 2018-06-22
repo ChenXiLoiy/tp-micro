@@ -735,6 +735,7 @@ func (t *TypeStructGroup) createTypesAndModels(models map[string]*Model) (s stri
 		tt.Doc = doc
 		if mod, ok := models[tt.Name]; ok {
 			mod.createModel(tt)
+			// mod.createMgoModel(tt)
 			return fmt.Sprintf("\n%stype %s = model.%s\n", tt.Doc, tt.Name, tt.Name)
 		}
 		return fmt.Sprintf("\n%stype %s %s\n", tt.Doc, tt.Name, addTag(tt.Body))
@@ -743,6 +744,7 @@ func (t *TypeStructGroup) createTypesAndModels(models map[string]*Model) (s stri
 		for _, tt := range t.Structs {
 			if mod, ok := models[tt.Name]; ok {
 				mod.createModel(tt)
+				// mod.createMgoModel(tt)
 				body += fmt.Sprintf("%s%s = model.%s\n", tt.Doc, tt.Name, tt.Name)
 			} else {
 				body += fmt.Sprintf("%s%s %s\n\n", tt.Doc, tt.Name, addTag(tt.Body))

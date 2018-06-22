@@ -15,15 +15,15 @@ func TestGenerator(t *testing.T) {
 	proj.genTypeAndModelFiles()
 	proj.genRouterFile()
 	proj.genHandlerAndLogicAndSdkFiles()
-	t.Logf("main.go:\n%s", codeFiles["main.go"])
-	t.Logf("config.go:\n%s", codeFiles["config.go"])
-	t.Logf("args/type.gen.go:\n%s", codeFiles["args/type.gen.go"])
-	t.Logf("logic/tmp_code.gen.go:\n%s", codeFiles["logic/tmp_code.gen.go"])
-	t.Logf("logic/model/init.go:\n%s", codeFiles["logic/model/init.go"])
-	t.Logf("api/handler.gen.go:\n%s", codeFiles["api/handler.gen.go"])
-	t.Logf("api/router.gen.go:\n%s", codeFiles["api/router.gen.go"])
-	t.Logf("sdk/rpc.gen.go:\n%s", codeFiles["sdk/rpc.gen.go"])
-	t.Logf("sdk/rpc_test.gen.go:\n%s", codeFiles["sdk/rpc.gen_test.go"])
+	// t.Logf("main.go:\n%s", codeFiles["main.go"])
+	// t.Logf("config.go:\n%s", codeFiles["config.go"])
+	// t.Logf("args/type.gen.go:\n%s", codeFiles["args/type.gen.go"])
+	// t.Logf("logic/tmp_code.gen.go:\n%s", codeFiles["logic/tmp_code.gen.go"])
+	// t.Logf("logic/model/init.go:\n%s", codeFiles["logic/model/init.go"])
+	// t.Logf("api/handler.gen.go:\n%s", codeFiles["api/handler.gen.go"])
+	// t.Logf("api/router.gen.go:\n%s", codeFiles["api/router.gen.go"])
+	// t.Logf("sdk/rpc.gen.go:\n%s", codeFiles["sdk/rpc.gen.go"])
+	// t.Logf("sdk/rpc_test.gen.go:\n%s", codeFiles["sdk/rpc.gen_test.go"])
 	for k, v := range codeFiles {
 		if strings.HasPrefix(k, "logic/model") {
 			t.Logf("%s:\n%s", k, v)
@@ -90,5 +90,4 @@ type User struct {
 	Id   int64
 	Name string
 	Age  int32
-}
-`
+}`

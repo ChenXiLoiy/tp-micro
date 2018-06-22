@@ -19,6 +19,7 @@ import (
 // GO 1.9 alias
 type M = bson.M
 type Collection = mgo.Collection
+type ChangeInfo = mgo.ChangeInfo
 type ObjectId = bson.ObjectId
 
 var (
