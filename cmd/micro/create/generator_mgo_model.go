@@ -126,9 +126,15 @@ func Get{{.Name}}DB() *mongo.CacheableDB {
 //  With cache layer;
 //  Insert data if the primary key is specified;
 //  Update data based on _updateFields if no primary key is specified;
-func Upsert{{.Name}}(selector mongo.M, updater mongo.M) error {
+func Upsert{{.Name}}(selector, updater mongo.M) error {
+	createdAt := updater["created_at"].(float64)
+	nowTime := coarsetime.FloorTimeNow().Unix()
+	if createdAt == 0 {
+		updater["created_at"] = nowTime
+	}
+	updater["updated_at"] = nowTime
 	return {{.LowerFirstName}}DB.WitchCollection(func(col *mongo.Collection) error {
-		_, err := col.Upsert(selector, updater)
+		_, err := col.Upsert(selector, mongo.M{"$set": updater})
 		return err
 	})
 }
@@ -137,10 +143,10 @@ func Upsert{{.Name}}(selector mongo.M, updater mongo.M) error {
 // NOTE:
 //  Without cache layer;
 //  If @return error!=nil, means the database error.
-func Get{{.Name}}ByWhere(query mongo.M) (*{{.Name}}, bool, error) {
-	var _{{.LowerFirstLetter}} = new({{.Name}})
+func Get{{.Name}}ByWhere(query mongo.M) ({{.Name}}, bool, error) {
+	var _{{.LowerFirstLetter}} {{.Name}}
 	err := {{.LowerFirstName}}DB.WitchCollection(func(col *mongo.Collection) error {
-		return col.Find(query).One(&_{{.LowerFirstLetter}})
+		return col.Find(query).One(_{{.LowerFirstLetter}})
 	})
 	switch err {
 	case nil:
